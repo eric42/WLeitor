@@ -18,7 +18,7 @@ namespace WLeitor
     {
 
         public List<string> listaArquivo = new List<string>();
-
+        public string a2;
         public Form1()
         {
             InitializeComponent();
@@ -29,10 +29,6 @@ namespace WLeitor
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult result = fbd.ShowDialog();
 
-            //Marca o diretório a ser listado
-            //DirectoryInfo diretorio = new DirectoryInfo(txtArquivo.Text);
-            //Executa função GetFile(Lista os arquivos desejados de acordo com o parametro)
-            
             var Arquivos = Directory.EnumerateFiles(fbd.SelectedPath, "*.xml", SearchOption.AllDirectories);
 
             foreach (var y in Arquivos)
@@ -45,47 +41,63 @@ namespace WLeitor
 
         private void btnGerar_Click(object sender, EventArgs e)
         {
-            if (lstArquivos.Items.Count > 0)
+            try
             {
-                List<string> lista = new List<string>();
-
-                foreach (string x in listaArquivo)
+                if (lstArquivos.Items.Count > 0)
                 {
-                    lista.Add(x);
-                }
+                    List<string> lista = new List<string>();
+                    StreamWriter pod;
+                    string caminho, path;
 
-                XmlNamespaceManager nsmgr = new XmlNamespaceManager(new NameTable());
-                nsmgr.AddNamespace("n", "http://www.portalfiscal.inf.br/nfe");
+                    caminho = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    path = caminho + @"\Relatorio.txt";
+                    pod = File.CreateText(path);
 
-                XmlDocument oXML = new XmlDocument();
-
-                XmlNode root;
-
-                XmlNodeList cnpj, nf, codProd, desc, unidade, quantidade, vlr;
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
-
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                int counter = 1, i = 1, l = 2, k = 2, h = 2, g = 2, f = 2, a = 1;
-
-
-                using (var excelPackage = new ExcelPackage())
-                {
-                    excelPackage.Workbook.Properties.Title = "Relatório";
-                    var sheet = excelPackage.Workbook.Worksheets.Add("Relatório");
-                    string caminho;
-
-                    string[] titulos = new string[] {"NUM_NF", "CNPJ_EMITENTE", "SEQ_ITEM", "COD_PRODUTO",
-                    "DESCRICAO", "UNIDADE_MEDIDA", "QUANTIDADE", "VLR_BRUTO"};
-
-                    foreach (var titulo in titulos)
+                    foreach (string x in listaArquivo)
                     {
-                        sheet.Cells[1, i++].Value = titulo;
+                        lista.Add(x);
                     }
+
+                    XmlNamespaceManager nsmgr = new XmlNamespaceManager(new NameTable());
+                    nsmgr.AddNamespace("n", "http://www.portalfiscal.inf.br/nfe");
+
+                    XmlDocument oXML = new XmlDocument();
+
+                    XmlNode root;
+
+                    XmlNodeList cnpj, nf, codProd, desc, unidade, quantidade, vlr;
+                    FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+                    List<string> a1, b1, c1, d1, e1, f1, g1, h1;
+
+                    a1 = new List<string>();
+                    b1 = new List<string>();
+                    c1 = new List<string>();
+                    d1 = new List<string>();
+                    e1 = new List<string>();
+                    f1 = new List<string>();
+                    g1 = new List<string>();
+                    h1 = new List<string>();
+
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    int counter = 1, i = 1, l = 2, k = 2, h = 2, g = 2, f = 2, a = 1, w1 = 0;
+
+                    pod.WriteLine("|NUM_NF|CNPJ_EMITENTE|SEQ_ITEM|COD_PRODUTO|DESCRICAO|UNIDADE_MEDIDA|QUANTIDADE|VLR_BRUTO|");
 
                     i = 2;
 
                     foreach (var y in lista)
                     {
+                        a1.Clear();
+                        b1.Clear();
+                        c1.Clear();
+                        d1.Clear();
+                        e1.Clear();
+                        f1.Clear();
+                        g1.Clear();
+                        h1.Clear();
+
+                        a2 = y.ToString();
                         oXML.Load(y);
                         root = oXML.DocumentElement;
                         cnpj = root.SelectNodes("//n:CNPJ", nsmgr);
@@ -102,65 +114,76 @@ namespace WLeitor
                             {
                                 for (int z = 0; z < codProd.Count; z++)
                                 {
-                                    sheet.Cells[i, 1].Value = oNo1.ChildNodes.Item(0).InnerText;
-                                    sheet.Cells[i, 2].Value = oNo.ChildNodes.Item(0).InnerText;
+                                    a1.Add(oNo1.ChildNodes.Item(0).InnerText.ToString());
+                                    b1.Add(oNo.ChildNodes.Item(0).InnerText.ToString());
                                     i++;
                                 }
                             }
 
-                            foreach (XmlNode oNo1 in codProd)
+                            foreach (XmlNode oNo2 in codProd)
                             {
-                                sheet.Cells[l, 4].Value = oNo1.ChildNodes.Item(0).InnerText;
-                                sheet.Cells[l, 3].Value = counter;
+                                d1.Add(oNo2.ChildNodes.Item(0).InnerText.ToString());
+                                c1.Add(counter.ToString());
                                 counter++;
                                 l++;
                             }
 
-                            foreach (XmlNode oNo1 in desc)
+                            foreach (XmlNode oNo3 in desc)
                             {
-                                sheet.Cells[k, 5].Value = oNo1.ChildNodes.Item(0).InnerText;
+                                e1.Add(oNo3.ChildNodes.Item(0).InnerText.ToString());
                                 k++;
                             }
 
-
-                            foreach (XmlNode oNo1 in unidade)
+                            foreach (XmlNode oNo4 in unidade)
                             {
-                                sheet.Cells[f, 6].Value = oNo1.ChildNodes.Item(0).InnerText;
+                                f1.Add(oNo4.ChildNodes.Item(0).InnerText.ToString());
                                 f++;
                             }
 
-                            foreach (XmlNode oNo1 in quantidade)
+                            foreach (XmlNode oNo5 in quantidade)
                             {
-                                sheet.Cells[h, 7].Value = oNo1.ChildNodes.Item(0).InnerText;
+                                g1.Add(oNo5.ChildNodes.Item(0).InnerText.ToString());
                                 h++;
                             }
 
-                            foreach (XmlNode oNo1 in vlr)
+                            foreach (XmlNode oNo6 in vlr)
                             {
                                 if (a < vlr.Count)
                                 {
-                                    sheet.Cells[g, 8].Value = oNo1.ChildNodes.Item(0).InnerText;
+                                    h1.Add(oNo6.ChildNodes.Item(0).InnerText.ToString());
                                     g++;
                                     a++;
                                 }
                             }
                             a = 1;
                             counter = 1;
+
+                            //writer here
+                            foreach (var val in a1)
+                            {
+                                var s9 = "|" + a1[w1].ToString() + "|" + b1[w1].ToString() + "|" + c1[w1].ToString() + "|" + d1[w1].ToString() + "|" + e1[w1].ToString() + "|" + f1[w1].ToString() + "|" + g1[w1].ToString() + "|" + h1[w1].ToString() + "|";
+                                pod.WriteLine(s9);
+                                pod.Flush();
+                                w1++;
+                            }
+                            w1 = 0;
+
                             break;
                         }
                     }
 
-                    caminho = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    string path = caminho + @"\Relatorio.xlsx";
-                    File.WriteAllBytes(path, excelPackage.GetAsByteArray());
                     MessageBox.Show("Concluído. Verifique em " + Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+
+                }
+                else
+                {
+                    MessageBox.Show("Não é possivel gerar o relatório sem selecionar ao menos 1 XML!", "Aviso", MessageBoxButtons.OK);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Não é possivel gerar o relatório sem selecionar ao menos 1 XML!", "Aviso", MessageBoxButtons.OK);
+                MessageBox.Show("Arqivo que apresentou erro:" +  a2, "Erro", MessageBoxButtons.OKCancel);
             }
-
         }
     }
 }
