@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lstArquivos = new System.Windows.Forms.ListBox();
             this.txtArquivo = new System.Windows.Forms.TextBox();
             this.btnSelecionar = new System.Windows.Forms.Button();
             this.btnGerar = new System.Windows.Forms.Button();
             this.fbd1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.btnClean = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,7 +68,7 @@
             // 
             // btnSelecionar
             // 
-            this.btnSelecionar.Location = new System.Drawing.Point(69, 346);
+            this.btnSelecionar.Location = new System.Drawing.Point(69, 354);
             this.btnSelecionar.Name = "btnSelecionar";
             this.btnSelecionar.Size = new System.Drawing.Size(138, 23);
             this.btnSelecionar.TabIndex = 1;
@@ -76,7 +78,7 @@
             // 
             // btnGerar
             // 
-            this.btnGerar.Location = new System.Drawing.Point(224, 346);
+            this.btnGerar.Location = new System.Drawing.Point(224, 355);
             this.btnGerar.Name = "btnGerar";
             this.btnGerar.Size = new System.Drawing.Size(151, 23);
             this.btnGerar.TabIndex = 2;
@@ -84,11 +86,22 @@
             this.btnGerar.UseVisualStyleBackColor = true;
             this.btnGerar.Click += new System.EventHandler(this.btnGerar_Click);
             // 
+            // btnClean
+            // 
+            this.btnClean.Image = ((System.Drawing.Image)(resources.GetObject("btnClean.Image")));
+            this.btnClean.Location = new System.Drawing.Point(415, 326);
+            this.btnClean.Name = "btnClean";
+            this.btnClean.Size = new System.Drawing.Size(41, 38);
+            this.btnClean.TabIndex = 3;
+            this.btnClean.UseVisualStyleBackColor = true;
+            this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 387);
+            this.Controls.Add(this.btnClean);
             this.Controls.Add(this.btnGerar);
             this.Controls.Add(this.btnSelecionar);
             this.Controls.Add(this.groupBox1);
@@ -108,6 +121,7 @@
         private System.Windows.Forms.Button btnGerar;
         private System.Windows.Forms.FolderBrowserDialog fbd1;
         private System.Windows.Forms.TextBox txtArquivo;
+        private System.Windows.Forms.Button btnClean;
     }
 }
 

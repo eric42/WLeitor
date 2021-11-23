@@ -29,14 +29,16 @@ namespace WLeitor
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult result = fbd.ShowDialog();
 
-            var Arquivos = Directory.EnumerateFiles(fbd.SelectedPath, "*.xml", SearchOption.AllDirectories);
-
-            foreach (var y in Arquivos)
+            if (fbd.SelectedPath != "")
             {
-                lstArquivos.Items.Add(Path.GetFileName(y));
-                listaArquivo.Add(y);
-            }
+                var Arquivos = Directory.EnumerateFiles(fbd.SelectedPath, "*.xml", SearchOption.AllDirectories);
 
+                foreach (var y in Arquivos)
+                {
+                    lstArquivos.Items.Add(Path.GetFileName(y));
+                    listaArquivo.Add(y);
+                }
+            }
         }
 
         private void btnGerar_Click(object sender, EventArgs e)
@@ -65,10 +67,10 @@ namespace WLeitor
 
                     XmlNode root;
 
-                    XmlNodeList cnpj, nf, codProd, desc, unidade, quantidade, vlr;
+                    XmlNodeList cnpj, nf, codProd, desc, unidade, quantidade, vlr, nfe;
                     FolderBrowserDialog fbd = new FolderBrowserDialog();
 
-                    List<string> a1, b1, c1, d1, e1, f1, g1, h1;
+                    List<string> a1, b1, c1, d1, e1, f1, g1, h1, i1;
 
                     a1 = new List<string>();
                     b1 = new List<string>();
@@ -78,11 +80,12 @@ namespace WLeitor
                     f1 = new List<string>();
                     g1 = new List<string>();
                     h1 = new List<string>();
+                    i1 = new List<string>();
 
                     ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                    int counter = 1, i = 1, l = 2, k = 2, h = 2, g = 2, f = 2, a = 1, w1 = 0;
+                    int counter = 1, i = 1, l = 2, k = 2, h = 2, g = 2, f = 2, a = 1, w1 = 0, j = 1;
 
-                    pod.WriteLine("|NUM_NF|CNPJ_EMITENTE|SEQ_ITEM|COD_PRODUTO|DESCRICAO|UNIDADE_MEDIDA|QUANTIDADE|VLR_BRUTO|");
+                    pod.WriteLine("|NUM_NF|NFE|CNPJ_EMITENTE|SEQ_ITEM|COD_PRODUTO|DESCRICAO|UNIDADE_MEDIDA|QUANTIDADE|VLR_BRUTO|");
 
                     i = 2;
 
@@ -96,6 +99,7 @@ namespace WLeitor
                         f1.Clear();
                         g1.Clear();
                         h1.Clear();
+                        i1.Clear();
 
                         a2 = y.ToString();
                         oXML.Load(y);
@@ -107,18 +111,24 @@ namespace WLeitor
                         unidade = root.SelectNodes("//n:uCom", nsmgr);
                         quantidade = root.SelectNodes("//n:qCom", nsmgr);
                         vlr = root.SelectNodes("//n:vProd", nsmgr);
+                        nfe = root.SelectNodes("//n:chNFe", nsmgr);
 
                         foreach (XmlNode oNo in cnpj)
                         {
                             foreach (XmlNode oNo1 in nf)
                             {
-                                for (int z = 0; z < codProd.Count; z++)
+                                foreach (XmlNode oNo7 in nfe)
                                 {
-                                    a1.Add(oNo1.ChildNodes.Item(0).InnerText.ToString());
-                                    b1.Add(oNo.ChildNodes.Item(0).InnerText.ToString());
-                                    i++;
+                                    for (int z = 0; z < codProd.Count; z++)
+                                    {
+                                        a1.Add(oNo1.ChildNodes.Item(0).InnerText.ToString());
+                                        b1.Add(oNo.ChildNodes.Item(0).InnerText.ToString());
+                                        i++;
+                                        i1.Add(oNo7.ChildNodes.Item(0).InnerText.ToString());
+                                    }
                                 }
                             }
+
 
                             foreach (XmlNode oNo2 in codProd)
                             {
@@ -161,7 +171,7 @@ namespace WLeitor
                             //writer here
                             foreach (var val in a1)
                             {
-                                var s9 = "|" + a1[w1].ToString() + "|" + b1[w1].ToString() + "|" + c1[w1].ToString() + "|" + d1[w1].ToString() + "|" + e1[w1].ToString() + "|" + f1[w1].ToString() + "|" + g1[w1].ToString() + "|" + h1[w1].ToString() + "|";
+                                var s9 = "|" + a1[w1].ToString() + "|" + i1[w1].ToString() + "|" + b1[w1].ToString() + "|" + c1[w1].ToString() + "|" + d1[w1].ToString() + "|" + e1[w1].ToString() + "|" + f1[w1].ToString() + "|" + g1[w1].ToString() + "|" + h1[w1].ToString() + "|";
                                 pod.WriteLine(s9);
                                 pod.Flush();
                                 w1++;
@@ -173,7 +183,7 @@ namespace WLeitor
                     }
 
                     MessageBox.Show("Concluído. Verifique em " + Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-
+                    lstArquivos.Items.Clear();
                 }
                 else
                 {
@@ -182,8 +192,13 @@ namespace WLeitor
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Arqivo que apresentou erro:" +  a2, "Erro", MessageBoxButtons.OKCancel);
+                MessageBox.Show("Arqivo que apresentou erro:" + a2, "Erro", MessageBoxButtons.OKCancel);
             }
+        }
+
+        private void btnClean_Click(object sender, EventArgs e)
+        {
+            lstArquivos.Items.Clear();
         }
     }
 }
