@@ -36,6 +36,7 @@
             this.btnGerar = new System.Windows.Forms.Button();
             this.fbd1 = new System.Windows.Forms.FolderBrowserDialog();
             this.btnClean = new System.Windows.Forms.Button();
+            this.chkRelatorios = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -96,11 +97,22 @@
             this.btnClean.UseVisualStyleBackColor = true;
             this.btnClean.Click += new System.EventHandler(this.btnClean_Click);
             // 
+            // chkRelatorios
+            // 
+            this.chkRelatorios.AutoSize = true;
+            this.chkRelatorios.Location = new System.Drawing.Point(13, 327);
+            this.chkRelatorios.Name = "chkRelatorios";
+            this.chkRelatorios.Size = new System.Drawing.Size(169, 17);
+            this.chkRelatorios.TabIndex = 4;
+            this.chkRelatorios.Text = "Gerar Relatórios Comparativos";
+            this.chkRelatorios.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 387);
+            this.Controls.Add(this.chkRelatorios);
             this.Controls.Add(this.btnClean);
             this.Controls.Add(this.btnGerar);
             this.Controls.Add(this.btnSelecionar);
@@ -110,6 +122,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -122,6 +135,7 @@
         private System.Windows.Forms.FolderBrowserDialog fbd1;
         private System.Windows.Forms.TextBox txtArquivo;
         private System.Windows.Forms.Button btnClean;
+        private System.Windows.Forms.CheckBox chkRelatorios;
     }
 }
 

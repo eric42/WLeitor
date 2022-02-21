@@ -12,11 +12,12 @@ using System.Windows.Forms;
 using System.Xml;
 using LicenseContext = OfficeOpenXml.LicenseContext;
 
+
 namespace WLeitor
 {
     public partial class Form1 : Form
     {
-
+        public List<string> compara = new List<string>();
         public List<string> listaArquivo = new List<string>();
         public string a2;
         public Form1()
@@ -26,6 +27,7 @@ namespace WLeitor
 
         private void btnSelecionar_Click(object sender, EventArgs e)
         {
+
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult result = fbd.ShowDialog();
 
@@ -39,6 +41,12 @@ namespace WLeitor
                     listaArquivo.Add(y);
                 }
             }
+
+            if (chkRelatorios.Checked)
+            {
+                frmParametros frm = new frmParametros(compara);
+                frm.Show();
+            }
         }
 
         private void btnGerar_Click(object sender, EventArgs e)
@@ -48,8 +56,8 @@ namespace WLeitor
                 if (lstArquivos.Items.Count > 0)
                 {
                     List<string> lista = new List<string>();
-                    StreamWriter pod;
-                    string caminho, path;
+                    StreamWriter pod, arq;
+                    string caminho, path, diretorio, arquivo;
 
                     caminho = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     path = caminho + @"\Relatorio.txt";
@@ -67,10 +75,12 @@ namespace WLeitor
 
                     XmlNode root;
 
-                    XmlNodeList cnpj, nf, codProd, desc, unidade, quantidade, vlr, nfe;
+                    XmlNodeList cnpj, nf, codProd, desc, unidade, quantidade, vlr, nfe, ncm;
                     FolderBrowserDialog fbd = new FolderBrowserDialog();
 
-                    List<string> a1, b1, c1, d1, e1, f1, g1, h1, i1;
+                    List<string> a1, b1, c1, d1, e1, f1, g1, h1, i1, j1;
+
+                    bool diferent = false;
 
                     a1 = new List<string>();
                     b1 = new List<string>();
@@ -81,11 +91,12 @@ namespace WLeitor
                     g1 = new List<string>();
                     h1 = new List<string>();
                     i1 = new List<string>();
+                    j1 = new List<string>();
 
                     ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                     int counter = 1, i = 1, l = 2, k = 2, h = 2, g = 2, f = 2, a = 1, w1 = 0, j = 1;
 
-                    pod.WriteLine("|NUM_NF|NFE|CNPJ_EMITENTE|SEQ_ITEM|COD_PRODUTO|DESCRICAO|UNIDADE_MEDIDA|QUANTIDADE|VLR_BRUTO|");
+                    pod.WriteLine("|NUM_NF|NFE|CNPJ_EMITENTE|SEQ_ITEM|COD_PRODUTO|DESCRICAO|NCM|UNIDADE_MEDIDA|QUANTIDADE|VLR_BRUTO|");
 
                     i = 2;
 
@@ -100,6 +111,7 @@ namespace WLeitor
                         g1.Clear();
                         h1.Clear();
                         i1.Clear();
+                        j1.Clear();
 
                         a2 = y.ToString();
                         oXML.Load(y);
@@ -112,6 +124,7 @@ namespace WLeitor
                         quantidade = root.SelectNodes("//n:qCom", nsmgr);
                         vlr = root.SelectNodes("//n:vProd", nsmgr);
                         nfe = root.SelectNodes("//n:chNFe", nsmgr);
+                        ncm = root.SelectNodes("//n:NCM", nsmgr);
 
                         foreach (XmlNode oNo in cnpj)
                         {
@@ -165,16 +178,51 @@ namespace WLeitor
                                     a++;
                                 }
                             }
+
+
+                            foreach(XmlNode oNo7 in ncm)
+                            {
+                                j1.Add(oNo7.ChildNodes.Item(0).InnerText.ToString());
+                                j++;
+                            }
+
                             a = 1;
                             counter = 1;
+                            
 
                             //writer here
                             foreach (var val in a1)
                             {
-                                var s9 = "|" + a1[w1].ToString() + "|" + i1[w1].ToString() + "|" + b1[w1].ToString() + "|" + c1[w1].ToString() + "|" + d1[w1].ToString() + "|" + e1[w1].ToString() + "|" + f1[w1].ToString() + "|" + g1[w1].ToString() + "|" + h1[w1].ToString() + "|";
+                                var s9 = "|" + a1[w1].ToString() + "|" + i1[w1].ToString() + "|" + b1[w1].ToString() + "|" + c1[w1].ToString() + "|" + d1[w1].ToString() + "|" + e1[w1].ToString() + "|"+ j1[w1].ToString() +"|"+ f1[w1].ToString() + "|" + g1[w1].ToString() + "|" + h1[w1].ToString() + "|";
                                 pod.WriteLine(s9);
                                 pod.Flush();
                                 w1++;
+                            }
+                            w1 = 0;
+
+                            if (chkRelatorios.Checked)
+                            {
+                                diretorio = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                arquivo = diretorio + @"\Diferencas.txt";
+                                arq = File.CreateText(arquivo);
+
+                                foreach (var val in a1)
+                                {
+                                    var s9 = "|" + a1[w1].ToString() + "|" + i1[w1].ToString() + "|" + b1[w1].ToString() + "|" + c1[w1].ToString() + "|" + d1[w1].ToString() + "|" + e1[w1].ToString() + "|" + j1[w1].ToString() + "|" + f1[w1].ToString() + "|" + g1[w1].ToString() + "|" + h1[w1].ToString() + "|";
+                                    foreach (var dif in compara)
+                                    {
+                                        if (dif.Contains(s9))
+                                        {
+                                            diferent = true;
+                                        }
+                                    }
+                                    if (!diferent)
+                                    {
+                                        arq.WriteLine(s9);
+                                        arq.Flush();
+                                    }
+                                    w1++;
+                                }
                             }
                             w1 = 0;
 
